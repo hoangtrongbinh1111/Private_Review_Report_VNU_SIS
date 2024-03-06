@@ -1,6 +1,5 @@
-# flask_sqlite
-A Flask Application that demonstrates Flask-WTF and Flask-SQLAlchemy using a
-SQLite database.
+# Private_Review_Report_VNU_SIS
+This application is supporting for VNU_SIS to verify their information
 
 ## Instructions
 As always ensure you create a virtual environment for this application and install
@@ -21,15 +20,12 @@ $ python run.py
 
 Browse to http://0.0.0.0:8080
 
-You can then add new users by browsing to http://0.0.0.0:8080/add-user and view
-a list of users by browsing to http://0.0.0.0:8080/users
+## Docker
+- sudo docker-compose up -d --build
 
-To reset the users table, run the following SQL query:
+## Guide to run
+- /users: list users that imported from excel file (.xls, .xlsx)
+- /import_excel: import file excel and update users to database
+- /export_excel: export file excel that has UUID, Name and message to each user
 ```
-DROP TABLE IF EXISTS users;
-CREATE TABLE users (
-  id integer primary key autoincrement,
-  name string not null,
-  email string not null
-);
-```
+### Trong Binh Hoang - LQDTU
