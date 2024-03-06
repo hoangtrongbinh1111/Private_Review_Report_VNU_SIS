@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block main %}
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+<h1>Thông tin kiểm tra của đồng chí - <b>{{username}}</b></h1>
+<table>
+    <thead>
+        <tr>
+            {% for header in records[0].keys() %}
+            <th>{{ header }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in records %}
+        <tr>
+            {% for key, value in record.items() %}
+            <td {% if loop.last %}style="font-weight: bold;"{% endif %}>{{ value }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
