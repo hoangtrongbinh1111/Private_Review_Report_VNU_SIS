@@ -1,0 +1,9 @@
+version: '3.3'
+
+services:
+  web-vnu-sis-authentication:
+    build: .
+    ports:
+      - "6868:6868"
+    volumes:
+      - .:/cstt-sis-vnu  # Mount local directory to container directory

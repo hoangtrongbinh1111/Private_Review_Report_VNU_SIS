@@ -12,13 +12,10 @@ import pyexcel
 from app.forms import UserForm
 from app.models import User
 import uuid
-import locale
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment
 from openpyxl.utils import get_column_letter
 from io import BytesIO
-# Set the locale to Vietnamese
-locale.setlocale(locale.LC_ALL, 'vi_VN.UTF-8')
 # import sqlite3
 
 # CONSTANT
@@ -28,6 +25,23 @@ FINISH_ROW_INDEX = 444 # to Xac nhan cua can bo thu truong don vi
 ###
 # Routing for your application.
 ###
+def format_currency(amount):
+    """
+    Format a number as currency in Vietnamese dong (VND).
+    """
+    # Convert the number to a string and reverse it
+    reversed_amount = str(amount)[::-1]
+    
+    # Insert a dot (.) after every three digits
+    formatted_amount = '.'.join(reversed_amount[i:i+3] for i in range(0, len(reversed_amount), 3))
+    
+    # Reverse the formatted string back to the original order
+    formatted_amount = formatted_amount[::-1]
+    
+    # Add the currency symbol (₫)
+    formatted_amount += ' ₫'
+    
+    return formatted_amount
 
 @app.route('/home')
 def home():
@@ -49,7 +63,7 @@ def home():
         # print(list(record.values()))
         currency_money = data[user.rowIndex]
         if currency_money is not None and currency_money != '':
-            currency_money = locale.currency(float(currency_money), grouping=True)
+            currency_money = format_currency(int(currency_money))
         # Select specific columns from the record
         formatted_record = {
             'TT': data[0],
