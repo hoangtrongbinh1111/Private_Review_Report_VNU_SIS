@@ -64,6 +64,8 @@ def home():
         currency_money = data[user.rowIndex]
         if currency_money is not None and currency_money != '':
             currency_money = format_currency(int(currency_money))
+        else:
+            continue
         # Select specific columns from the record
         formatted_record = {
             'TT': data[0],
@@ -134,7 +136,8 @@ def import_excel():
         end_user_index = len(list_user) - 2 # 2 cột cuối là lỗi nên phải bỏ đi
         list_user_format = list_user[start_user_index:end_user_index]
         for user_name in list_user_format:
-            user = User(user_name, str(uuid.uuid4()), start_user_index)
+            uuid_user = str(uuid.uuid4())
+            user = User(user_name, uuid_user, start_user_index)
             db.session.add(user)
             start_user_index = start_user_index + 1
         db.session.commit()
