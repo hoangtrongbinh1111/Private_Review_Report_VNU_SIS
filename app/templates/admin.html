@@ -18,7 +18,7 @@
     function uploadFile() {
         const password = document.getElementById('password').value;
         // You can add your password validation logic here
-        if (password !== '') {
+        if (!password || password === '') {
             alert('Vui lòng nhập mật khẩu để bảo mật file của bạn!');
             return;
         }
