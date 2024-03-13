@@ -2,10 +2,46 @@
 
 {% block main %}
 <h1>Xin chào ADMIN</h1>
-<a href="/import_excel" target="_blank">Cập nhật file excel</a>
+<input type="password" id="password" placeholder="Enter password">
+<br>
+<input type="file" id="fileInput">
+<button onclick="uploadFile()">Upload file kiểm tra</button>
+</form>
+<br>
+<a href="{{ url_for('import_excel') }}" target="_blank">Cập nhật file excel</a>
 <br>
 <a href="/export_excel" target="_blank">Xuất file danh sách thông tin cán bộ</a>
 <br>
 <a href="/users" target="_blank">Danh sách cán bộ</a>
 <br>
+<script>
+    function uploadFile() {
+        const password = document.getElementById('password').value;
+        // You can add your password validation logic here
+        if (password !== '') {
+            alert('Vui lòng nhập mật khẩu để bảo mật file của bạn!');
+            return;
+        }
+        const fileInput = document.getElementById('fileInput');
+        const file = fileInput.files[0];
+        const formData = new FormData();
+        formData.append('file', file);
+
+        fetch('/upload', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert(data.message);
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+</script>
 {% endblock %}

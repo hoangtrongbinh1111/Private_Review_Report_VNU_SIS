@@ -6,7 +6,7 @@ This file creates your application.
 """
 
 from app import app, db
-from flask import render_template, request, redirect, url_for, flash, make_response, send_file
+from flask import render_template, request, redirect, url_for, flash, make_response, send_file, jsonify
 import pandas as pd
 import pyexcel
 from app.forms import UserForm
@@ -16,12 +16,19 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment
 from openpyxl.utils import get_column_letter
 from io import BytesIO
+import os
+from werkzeug.utils import secure_filename
 # import sqlite3
 
 # CONSTANT
 ADMIN_TK = "0985592699" # extract name
 ADMIN_ROW_INDEX = 264499
 FINISH_ROW_INDEX = 444 # to Xac nhan cua can bo thu truong don vi
+app.config['UPLOAD_FOLDER'] = os.getcwd()
+ALLOWED_EXTENSIONS = {'xlsx'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 ###
 # Routing for your application.
 ###
@@ -108,6 +115,23 @@ def logout():
     # Clear the UUID cookie by setting its value to an empty string and setting its max_age to 0
     response.set_cookie('uuid', '', max_age=0)
     return response
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload_file():
+    if 'file' not in request.files:
+        return jsonify({'status': 'error', 'message': 'No file part'})
+    
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'status': 'error', 'message': 'No selected file'})
+    
+    if file and allowed_file(file.filename):
+        filename = 'data.xlsx'  # Fixed filename
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        return jsonify({'status': 'success', 'message': 'File successfully uploaded'})
+    else:
+        return jsonify({'status': 'error', 'message': 'Allowed file types are xlsx only'})
+
 
 @app.route('/import_excel')
 def import_excel():
