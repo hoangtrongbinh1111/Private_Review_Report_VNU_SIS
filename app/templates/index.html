@@ -28,7 +28,7 @@
         {% for record in records %}
         <tr>
             {% for key, value in record.items() %}
-            <td {% if loop.last %}style="font-weight: bold;width: 15%;"{% endif %}>{{ value }}</td>
+            <td {% if loop.last %}style="font-weight: bold;width: 15%;text-align: end;"{% endif %}>{{ value }}</td>
             {% endfor %}
         </tr>
         {% endfor %}
