@@ -25,7 +25,7 @@ import string
 # CONSTANT
 ADMIN_TK = "0985592699" # extract name
 ADMIN_ROW_INDEX = 264499
-FINISH_ROW_INDEX = 55 # to Xac nhan cua can bo thu truong don vi
+FINISH_ROW_INDEX = 900 # to Xac nhan cua can bo thu truong don vi
 app.config['UPLOAD_FOLDER'] = os.getcwd()
 ALLOWED_EXTENSIONS = {'xlsx'}
 
