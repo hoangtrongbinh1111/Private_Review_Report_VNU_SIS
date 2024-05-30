@@ -69,7 +69,7 @@ def home():
         return render_template('admin.html')
     # Read the Excel file
     records = pyexcel.get_records(file_name='data.xlsx')  # Replace 'data.xls' with the path to your Excel file
-    del records[0] # remove blank record
+    # del records[0] # remove blank record
     del records[FINISH_ROW_INDEX:]
     # Format the records with specific columns
     formatted_records = []
@@ -79,7 +79,7 @@ def home():
         # print(list(record.values()))
         currency_money = data[user.rowIndex]
         try:
-            if currency_money is not None and currency_money != '':
+            if currency_money is not None and currency_money != '' and index >= 10:
                 currency_money = format_currency(int(currency_money))
             else:
                 continue
