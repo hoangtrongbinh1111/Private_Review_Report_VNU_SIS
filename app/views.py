@@ -78,10 +78,13 @@ def home():
         # print(list(record.keys()))
         # print(list(record.values()))
         currency_money = data[user.rowIndex]
-        if currency_money is not None and currency_money != '':
-            currency_money = format_currency(int(currency_money))
-        else:
-            continue
+        try:
+            if currency_money is not None and currency_money != '':
+                currency_money = format_currency(int(currency_money))
+            else:
+                continue
+        except:
+            currency_money = data[user.rowIndex]
         # Select specific columns from the record
         formatted_record = {
             'TT': data[0],
@@ -89,7 +92,7 @@ def home():
             'CK': data[2],
             'TM/CK': data[3],
             'Nội dung': data[4],
-            'Số tiền': currency_money,
+            'Số liệu': currency_money,
             # Add more columns as needed
         }
         formatted_records.append(formatted_record)
