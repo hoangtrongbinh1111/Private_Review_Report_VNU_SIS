@@ -81,10 +81,11 @@ def home():
         if currency_money is None or currency_money == '':
             continue
         try:
-            if int(currency_money) == 0:
-                continue
-            if currency_money is not None and currency_money != '' and index >= 10:
-                currency_money = format_currency(int(currency_money))
+            if index >= 10:
+                if int(currency_money) == 0:
+                    continue
+                if currency_money is not None and currency_money != '':
+                    currency_money = format_currency(int(currency_money))
         except:
             currency_money = data[user.rowIndex]
 
