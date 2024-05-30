@@ -191,7 +191,7 @@ def import_excel():
     return render_template('about.html', status=status)
 
 def generate_message(name, uuid):
-    message = f"Để đảm bảo thông tin chính xác, Phòng Kế toán yêu cầu đồng chí {name} vào trang http://103.167.89.184:6868 và nhập UUID: {uuid} để kiểm tra thông tin. Nếu có sai sót vui lòng liên hệ trực tiếp với phòng Kế toán để cập nhật lại!"
+    message = f"Phòng KHTC xin gửi thầy, cô đường link http://103.167.89.184:6868 và mật khẩu {uuid} để truy cập dữ liệu thu nhập hàng tháng. Trân trọng!"
     return message
 @app.route('/export_excel')
 def export_excel():
