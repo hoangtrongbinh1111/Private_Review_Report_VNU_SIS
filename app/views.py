@@ -78,13 +78,8 @@ def home():
         # print(list(record.keys()))
         # print(list(record.values()))
         currency_money = data[user.rowIndex]
-        try:
-            if currency_money is not None and currency_money != '' and index >= 10:
-                currency_money = format_currency(int(currency_money))
-            else:
-                continue
-        except:
-            currency_money = data[user.rowIndex]
+        if currency_money is not None and currency_money != '' and index >= 10:
+            currency_money = format_currency(int(currency_money))
         # Select specific columns from the record
         formatted_record = {
             'TT': data[0],
