@@ -82,11 +82,12 @@ def home():
             continue
         # Select specific columns from the record
         formatted_record = {
-            'TT': data[0],
-            'Ngày, tháng': data[1],
-            'CK': data[2],
-            'TM/CK': data[3],
-            'Nội dung': data[4],
+            'Ngày, tháng': data[0],
+            'TT': data[1],
+            'Nội dung': data[2],
+            # 'CK': data[2],
+            # 'TM/CK': data[3],
+            # 'Nội dung': data[4],
             'Số tiền': currency_money,
             # Add more columns as needed
         }
@@ -162,9 +163,9 @@ def import_excel():
     try:
         # Read the Excel file
         records = pyexcel.get_records(file_name='data.xlsx')  # Replace 'data.xls' with the path to your Excel file
-        list_user = list(records[0].keys())
-        start_user_index = 5 # bắt đầu từ index User
-        end_user_index = len(list_user) - 2 # 2 cột cuối là lỗi nên phải bỏ đi
+        list_user = list(records[1].keys()) # từ hàng 2
+        start_user_index = 4 # bắt đầu từ index User
+        end_user_index = len(list_user) # 2 cột cuối là lỗi nên phải bỏ đi
         list_user_format = list_user[start_user_index:end_user_index]
         for user_name in list_user_format:
             # uuid_user = str(uuid.uuid4())
