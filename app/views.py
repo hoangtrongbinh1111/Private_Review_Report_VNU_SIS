@@ -35,21 +35,23 @@ def allowed_file(filename):
 # Routing for your application.
 ###
 def format_currency(amount):
-    """
-    Format a number as currency in Vietnamese dong (VND).
-    """
-    # Convert the number to a string and reverse it
-    reversed_amount = str(amount)[::-1]
-    
-    # Insert a dot (.) after every three digits
-    formatted_amount = '.'.join(reversed_amount[i:i+3] for i in range(0, len(reversed_amount), 3))
-    
-    # Reverse the formatted string back to the original order
-    formatted_amount = formatted_amount[::-1]
-    
-    # Add the currency symbol (₫)
-    formatted_amount += ' ₫'
-    
+    try:
+        """
+        Format a number as currency in Vietnamese dong (VND).
+        """
+        # Convert the number to a string and reverse it
+        reversed_amount = str(amount)[::-1]
+        
+        # Insert a dot (.) after every three digits
+        formatted_amount = '.'.join(reversed_amount[i:i+3] for i in range(0, len(reversed_amount), 3))
+        
+        # Reverse the formatted string back to the original order
+        formatted_amount = formatted_amount[::-1]
+        
+        # Add the currency symbol (₫)
+        formatted_amount += ' ₫'
+    except:
+        formatted_amount = amount
     return formatted_amount
 
 def generate_random_string(length=6):
