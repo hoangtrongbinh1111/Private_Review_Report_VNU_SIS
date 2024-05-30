@@ -164,8 +164,9 @@ def import_excel():
         # Read the Excel file
         records = pyexcel.get_records(file_name='data.xlsx')  # Replace 'data.xls' with the path to your Excel file
         list_user = list(records[2].keys()) # từ hàng 2
+        print(list_user)
         start_user_index = 4 # bắt đầu từ index User
-        end_user_index = len(list_user) # 2 cột cuối là lỗi nên phải bỏ đi
+        end_user_index = len(list_user) - 2 # 2 cột cuối là lỗi nên phải bỏ đi
         list_user_format = list_user[start_user_index:end_user_index]
         for user_name in list_user_format:
             # uuid_user = str(uuid.uuid4())
