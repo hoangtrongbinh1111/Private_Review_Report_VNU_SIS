@@ -18,12 +18,14 @@ from openpyxl.utils import get_column_letter
 from io import BytesIO
 import os
 from werkzeug.utils import secure_filename
+import random
+import string
 # import sqlite3
 
 # CONSTANT
 ADMIN_TK = "0985592699" # extract name
 ADMIN_ROW_INDEX = 264499
-FINISH_ROW_INDEX = 444 # to Xac nhan cua can bo thu truong don vi
+FINISH_ROW_INDEX = 55 # to Xac nhan cua can bo thu truong don vi
 app.config['UPLOAD_FOLDER'] = os.getcwd()
 ALLOWED_EXTENSIONS = {'xlsx'}
 
@@ -49,6 +51,11 @@ def format_currency(amount):
     formatted_amount += ' ₫'
     
     return formatted_amount
+
+def generate_random_string(length=6):
+    characters = string.ascii_letters + string.digits
+    random_string = ''.join(random.choices(characters, k=length))
+    return random_string
 
 @app.route('/home')
 def home():
@@ -160,7 +167,8 @@ def import_excel():
         end_user_index = len(list_user) - 2 # 2 cột cuối là lỗi nên phải bỏ đi
         list_user_format = list_user[start_user_index:end_user_index]
         for user_name in list_user_format:
-            uuid_user = str(uuid.uuid4())
+            # uuid_user = str(uuid.uuid4())
+            uuid_user = generate_random_string()
             user = User(user_name, uuid_user, start_user_index)
             db.session.add(user)
             start_user_index = start_user_index + 1
