@@ -250,9 +250,9 @@ def export_excel():
 
 @app.route('/users')
 def show_users():
-    uuid = request.cookies.get('uuid')
-    if not uuid or uuid != str(ADMIN_TK):
-        return redirect(url_for('login'))
+    # uuid = request.cookies.get('uuid')
+    # if not uuid or uuid != str(ADMIN_TK):
+    #     return redirect(url_for('login'))
     users = db.session.query(User).all() # or you could have used User.query.all()
 
     return render_template('show_users.html', users=users)
