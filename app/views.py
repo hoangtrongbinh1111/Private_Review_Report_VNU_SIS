@@ -65,7 +65,8 @@ def home():
     if not uuid:
         return redirect(url_for('login'))
     user = User.query.filter_by(uuid=uuid).first()
-    if user.uuid == ADMIN_TK:
+    print(user, user.uuid, ADMIN_TK)
+    if uuid == ADMIN_TK:
         return render_template('admin.html')
     # Read the Excel file
     records = pyexcel.get_records(file_name='data.xlsx')  # Replace 'data.xls' with the path to your Excel file
