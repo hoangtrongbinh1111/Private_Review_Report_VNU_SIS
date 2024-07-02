@@ -11,7 +11,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 # Path to your schema.sql file
-SCHEMA = os.path.join(basedir, 'schema.sql')
+SCHEMA = 'schema.sql'
 
 def create_database():
     if not os.path.exists(os.path.join(basedir, 'mydatabase.db')):
