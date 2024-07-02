@@ -291,12 +291,10 @@ def import_excel():
     {"name": "Nguyễn Thị Minh Châu", "code": "eElSDl"}
 ]
     # Check if the user already exists
-    existing_user = User.query.filter_by(name="ADMIN").first()
-    if existing_user is None:
-        # User does not exist, create and add to the session
-        user = User("9999", "ADMIN", ADMIN_TK, ADMIN_ROW_INDEX)
-        db.session.add(user)
-        db.session.commit()
+    # User does not exist, create and add to the session
+    user = User("9999", "ADMIN", str(ADMIN_TK), ADMIN_ROW_INDEX)
+    db.session.add(user)
+    db.session.commit()
 
     status = True
     try:
