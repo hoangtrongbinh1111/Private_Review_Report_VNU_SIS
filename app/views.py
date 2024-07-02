@@ -82,7 +82,7 @@ def home():
         if currency_money is None or currency_money == '':
             continue
         try:
-            if index >= 6:
+            if index >= 10:
                 if int(currency_money) == 0:
                     continue
                 if currency_money is not None and currency_money != '':
