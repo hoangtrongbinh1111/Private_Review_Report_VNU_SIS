@@ -148,38 +148,179 @@ def upload_file():
     else:
         return jsonify({'status': 'error', 'message': 'Allowed file types are xlsx only'})
 
-
-@app.route('/import_excel')
-def import_excel():
+@app.route('/clear_db')
+def clear_db():
     try:
         db.create_all()
         # Delete all records from the User table
         User.query.delete()
         # Commit the changes to the database
         db.session.commit()
-        print("All data in the User table deleted successfully.")
+        return "All data in the User table deleted successfully."
     except Exception as e:
         # If any exception occurs, print the error message
         print(f"An error occurred: {str(e)}")
         # Optionally, you can rollback the database session in case of an error
         db.session.rollback()
-    user = User("ADMIN", ADMIN_TK, ADMIN_ROW_INDEX)
-    db.session.add(user)
-    db.session.commit()
+        return "Error"
+    
+@app.route('/import_excel')
+def import_excel():
+    data_sample = [
+    {"name": "Nguyễn Văn Hiệu", "code": "lVKcor"},
+    {"name": "Nguyễn Kiều Oanh", "code": "RHGe9i"},
+    {"name": "Hoàng Trọng Nghĩa", "code": "QW3Ryx"},
+    {"name": "Nguyễn Việt Khôi", "code": "Wbq50e"},
+    {"name": "Nguyễn Văn Thái", "code": "uYdHud"},
+    {"name": "Nguyễn Hồng Hà", "code": "lHKmMV"},
+    {"name": "Võ Thị Thanh Tâm", "code": "CSGf0p"},
+    {"name": "Phạm Văn Hứa", "code": "oKIer4"},
+    {"name": "Bàng Xuân Hùng", "code": "oX1NrT"},
+    {"name": "Dư Đức Thắng", "code": "ECPZWr"},
+    {"name": "Hồ Xuân Hương", "code": "SDMAkB"},
+    {"name": "Nguyễn Thị Vân Tú", "code": "vDCnvd"},
+    {"name": "Hoàng Thị Tuyết Mai", "code": "xDHThM"},
+    {"name": "Đỗ Huy Thưởng", "code": "LafQCZ"},
+    {"name": "Nguyễn Thu Thủy", "code": "zGQpca"},
+    {"name": "Nguyễn Ngọc Trực", "code": "5V3Jq0"},
+    {"name": "Trần Thị An", "code": "vzK23X"},
+    {"name": "Trần Nhật Lam Duyên", "code": "zScg03"},
+    {"name": "Đinh Việt Hưng", "code": "FMosbn"},
+    {"name": "Hoàng Thúy Quỳnh", "code": "WEWtkj"},
+    {"name": "Vũ Hoài Đức", "code": "sIlOnZ"},
+    {"name": "Đặng Thị Mùi", "code": "D1kz2b"},
+    {"name": "Bùi Đại Dũng", "code": "tF38ps"},
+    {"name": "Nguyễn Thị Hiền", "code": "j388MR"},
+    {"name": "Nguyễn Thị Thanh Huyền", "code": "0L3jqI"},
+    {"name": "Mai Thị Hạnh", "code": "P9HFWn"},
+    {"name": "Phạm Quỳnh Phương", "code": "2PNh8E"},
+    {"name": "Lê Phước Anh", "code": "NWQIrE"},
+    {"name": "Nguyễn Thu Hương", "code": "lHqwvd"},
+    {"name": "Lư Thị Thanh Lê", "code": "WENCLC"},
+    {"name": "Đỗ Xuân Đức", "code": "8Ho28R"},
+    {"name": "Vũ Đường Luân", "code": "dHoF3g"},
+    {"name": "Đinh Việt Hải", "code": "aGDcmp"},
+    {"name": "Trần Thị Hoan", "code": "wo5Tah"},
+    {"name": "Nguyễn Thu Thủy-1", "code": "3gs3fZ"},
+    {"name": "Nguyễn Thị Lan Anh", "code": "ncC61l"},
+    {"name": "Nguyễn Hữu Cung", "code": "hVir3f"},
+    {"name": "Bùi Thị Thanh Hương", "code": "uwmYoA"},
+    {"name": "Dương Văn Hào", "code": "Uebxez"},
+    {"name": "Nguyễn Thị Mai Lan", "code": "t3UoWY"},
+    {"name": "Nguyễn Anh Thư", "code": "r8qhor"},
+    {"name": "Nguyễn Cẩm Chi", "code": "2c9Raj"},
+    {"name": "Bùi Thị Thanh Hoa", "code": "AIaLol"},
+    {"name": "Trần Điệp Thành", "code": "kZguCv"},
+    {"name": "Lê Thị Hà", "code": "JhMET3"},
+    {"name": "Trần Hoài", "code": "EPXcOE"},
+    {"name": "Nguyễn Thị Thanh Mai", "code": "v8qZRO"},
+    {"name": "Trần Yên Thế", "code": "smhMaf"},
+    {"name": "Trương Thị Thu Thủy", "code": "8yZPLa"},
+    {"name": "Trần Thị Thy Trà", "code": "BkPg5H"},
+    {"name": "Đào Mạnh Đạt", "code": "JCwiHg"},
+    {"name": "Hoàng Thị Thu Hà", "code": "TMch3F"},
+    {"name": "Trần Quốc Trung", "code": "jabDvc"},
+    {"name": "Lê Xuân Thái", "code": "FokgZy"},
+    {"name": "Phan Quang Anh", "code": "FpRLQQ"},
+    {"name": "Nguyễn Thị Thu Hương", "code": "yEVQZJ"},
+    {"name": "Phạm Thị Kiều Ly", "code": "Erg7Ja"},
+    {"name": "Nguyễn Văn Huấn", "code": "k0XTmj"},
+    {"name": "Lê Minh Sơn", "code": "D23iM3"},
+    {"name": "Chu Mạnh Hùng", "code": "uLQGey"},
+    {"name": "Vũ Kim Yến", "code": "fl1w4o"},
+    {"name": "Nguyễn Ngọc Minh", "code": "MLXHCT"},
+    {"name": "Nguyễn Thị Oanh", "code": "0RPo25"},
+    {"name": "Vũ Thành Trung", "code": "wsqqKo"},
+    {"name": "Nhữ Mạnh Tiến", "code": "q6NNok"},
+    {"name": "Vũ Thanh Ngọc", "code": "nNvfqf"},
+    {"name": "Nguyễn Thị Minh Thảo", "code": "giLzpB"},
+    {"name": "Nguyễn Thị Thu Hương-1", "code": "HAVv34"},
+    {"name": "Hoàng Văn Hiệp", "code": "lXMHw4"},
+    {"name": "Vũ Đình Hoàng Anh Tuấn", "code": "Fut0bc"},
+    {"name": "Phạm Thị Thanh Hằng", "code": "BZWwSc"},
+    {"name": "Nguyễn Hà Khoa Học", "code": "2cZQL2"},
+    {"name": "Nguyễn Văn Minh", "code": "CfgGnI"},
+    {"name": "Đinh Thế Anh", "code": "nH3xtT"},
+    {"name": "Uông Thị Huyền Hạnh", "code": "cd6nf9"},
+    {"name": "Nguyễn Thế Sơn", "code": "CvaVaW"},
+    {"name": "Triệu Kim Trường", "code": "lORYR1"},
+    {"name": "Lương Thị Hường", "code": "SCL4Gi"},
+    {"name": "Nguyễn Đức Thái", "code": "CRv8C9"},
+    {"name": "Trần Việt Tùng", "code": "7ggMbF"},
+    {"name": "Đặng Thu Phương", "code": "FRINeO"},
+    {"name": "Nguyễn Bích Ngọc", "code": "2yXgSf"},
+    {"name": "Đỗ Ngọc Anh", "code": "BhQ8Wf"},
+    {"name": "Nguyễn Thị Thanh Xuân", "code": "AW9OYG"},
+    {"name": "Nguyễn Thị Thu Hà", "code": "79J5xd"},
+    {"name": "Huỳnh Thị Hòa", "code": "Bpj2zM"},
+    {"name": "Kiều Trung Kiên", "code": "SN1xjx"},
+    {"name": "Hoàng Diễn Thanh", "code": "33LSST"},
+    {"name": "Nguyễn Hồng Nhung", "code": "u2RrMr"},
+    {"name": "Ngô Xuân Phú", "code": "eYgNt8"},
+    {"name": "Nguyễn Quang Vinh", "code": "W3Vs36"},
+    {"name": "Nguyễn Thị Tuyết Trinh", "code": "ZmltMm"},
+    {"name": "Nguyễn Văn Minh-1", "code": "KdUJCX"},
+    {"name": "Nguyễn Hoàng Phương Minh", "code": "vQDkE1"},
+    {"name": "Nguyễn Thị Thanh Hồng", "code": "gl7tCL"},
+    {"name": "Nguyễn Thị Giang Nam", "code": "8RkNXQ"},
+    {"name": "Phạm Thị Hồng Nhung", "code": "6XtZ9G"},
+    {"name": "Nguyễn Hồng Hạnh", "code": "DiRUAf"},
+    {"name": "Nguyễn Tùng Linh", "code": "sLXDES"},
+    {"name": "Triệu Minh Hải", "code": "t1bpDB"},
+    {"name": "Lê Quang Pháp", "code": "RFvkSF"},
+    {"name": "Thái Nhật Minh", "code": "9qskfG"},
+    {"name": "Ngô Đức Duy", "code": "yqwpMT"},
+    {"name": "Đinh Thị Thu", "code": "949pRP"},
+    {"name": "Vũ Thị Trâm Anh", "code": "HVZsRZ"},
+    {"name": "Nguyễn Thị Tuệ Thư", "code": "1TwMfd"},
+    {"name": "Phạm Minh Quân", "code": "S2Ltlx"},
+    {"name": "Kiều Thị Yến", "code": "h2umM7"},
+    {"name": "Lê Duy Khương", "code": "W3UQrM"},
+    {"name": "Nguyễn Đức Tuấn", "code": "vwkQ4n"},
+    {"name": "Chu Trung Tiến", "code": "e0ak2X"},
+    {"name": "Phạm Minh Tâm", "code": "3Rz3oB"},
+    {"name": "Phạm Thị Thanh Xuân", "code": "iWpAuo"},
+    {"name": "Trần Minh Anh", "code": "plHR6L"},
+    {"name": "Hoàng Huy Dương", "code": "xt1RkQ"},
+    {"name": "Nguyễn Thị Hoài Thương", "code": "xWV0x6"},
+    {"name": "Nguyễn Chí Trung", "code": "DoqSaa"},
+    {"name": "Nguyễn Thảo Ly", "code": "ejnb4s"},
+    {"name": "Tạ Ngọc Ánh", "code": "wVubnx"},
+    {"name": "Phạm Thị Mai Hương", "code": "LWomP3"},
+    {"name": "Lăng Thị Hồng Nhung", "code": "kiNvO3"},
+    {"name": "Nguyễn Thị Minh Châu", "code": "eElSDl"}
+]
+    # Check if the user already exists
+    existing_user = User.query.filter_by(name="ADMIN").first()
+    if existing_user is None:
+        # User does not exist, create and add to the session
+        user = User("9999", "ADMIN", ADMIN_TK, ADMIN_ROW_INDEX)
+        db.session.add(user)
+        db.session.commit()
 
     status = True
     try:
         # Read the Excel file
         records = pyexcel.get_records(file_name='data.xlsx')  # Replace 'data.xls' with the path to your Excel file
-        list_user = list(records[0].keys())
+        list_user = list(records[0].keys()) # danh sách users
+        # Danh sách mã số
+        list_code = list(records[1].values())
         start_user_index = 5 # bắt đầu từ index User
-        end_user_index = len(list_user) # 2 cột cuối là lỗi nên phải bỏ đi
+        end_user_index = len(list_user) # 
         list_user_format = list_user[start_user_index:end_user_index]
         for user_name in list_user_format:
-            # uuid_user = str(uuid.uuid4())
-            uuid_user = generate_random_string()
-            user = User(user_name, uuid_user, start_user_index)
-            db.session.add(user)
+            # Check if the user already exists
+            existing_user = User.query.filter_by(name=user_name).first()
+            found_item = next((item for item in data_sample if item["name"] == user_name), None)
+            if found_item is None:
+                found_item = {"name": user_name, "code": generate_random_string()}
+            if existing_user is None:
+                # User does not exist, create and add to the session
+                user = User(str(list_code[start_user_index]), user_name, found_item["code"], start_user_index)
+                db.session.add(user)
+            else:
+                existing_user.uuid = found_item["code"]
+                existing_user.code = str(list_code[start_user_index])
             start_user_index = start_user_index + 1
         db.session.commit()
     except Exception as e:
