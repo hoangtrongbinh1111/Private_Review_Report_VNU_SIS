@@ -26,7 +26,7 @@ from flask_caching import Cache
 # import sqlite3
 
 # CONSTANT
-ADMIN_TK = "123456789" # extract name
+ADMIN_TK = "wdWszs1JZ4D8NLu87AxDoJACikZAt1bpt6LrxXVgVi" # extract name
 ADMIN_ROW_INDEX = 264499
 FINISH_ROW_INDEX = 900 # to Xac nhan cua can bo thu truong don vi
 app.config['UPLOAD_FOLDER'] = os.getcwd()
