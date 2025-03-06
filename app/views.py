@@ -20,6 +20,9 @@ import os
 from werkzeug.utils import secure_filename
 import random
 import string
+import json
+import math
+from flask_caching import Cache
 # import sqlite3
 
 # CONSTANT
@@ -27,10 +30,30 @@ ADMIN_TK = "123456789" # extract name
 ADMIN_ROW_INDEX = 264499
 FINISH_ROW_INDEX = 900 # to Xac nhan cua can bo thu truong don vi
 app.config['UPLOAD_FOLDER'] = os.getcwd()
+app.config['CACHE_TYPE'] = 'simple'
 ALLOWED_EXTENSIONS = {'xlsx'}
+
+cache = Cache(app)
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def excel_to_json():
+    """Chuyển file Excel thành JSON và lưu cache"""
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], 'data.xlsx')
+    if not os.path.exists(file_path):
+        return []
+
+    df = pd.read_excel(file_path)
+    df = df.iloc[:FINISH_ROW_INDEX]  # Giới hạn số dòng
+    records = df.to_dict(orient='records')
+
+    json_path = os.path.join(app.config['UPLOAD_FOLDER'], 'data.json')
+    with open(json_path, 'w', encoding='utf-8') as f:
+        json.dump(records, f, ensure_ascii=False, indent=4)
+    
+    cache.set("excel_data", records)  # Lưu JSON vào cache RAM
+    return records
 ###
 # Routing for your application.
 ###
@@ -59,6 +82,12 @@ def generate_random_string(length=6):
     random_string = ''.join(random.choices(characters, k=length))
     return random_string
 
+# Hàm kiểm tra NaN và thay thế bằng chuỗi rỗng
+def clean_value(value):
+    if value is None or value == '' or (isinstance(value, float) and math.isnan(value)):
+        return ""  # Nếu là NaN, None hoặc chuỗi rỗng, thay bằng ""
+    return value 
+
 @app.route('/home')
 def home():
     uuid = request.cookies.get('uuid')
@@ -68,10 +97,13 @@ def home():
     print(user, user.uuid, ADMIN_TK)
     if uuid == ADMIN_TK:
         return render_template('admin.html')
+    records = cache.get("excel_data")
+    if records is None:
+        records = excel_to_json()
     # Read the Excel file
-    records = pyexcel.get_records(file_name='data.xlsx')  # Replace 'data.xls' with the path to your Excel file
+    # records = pyexcel.get_records(file_name='data.xlsx')  # Replace 'data.xls' with the path to your Excel file
     # del records[0] # remove blank record
-    del records[FINISH_ROW_INDEX:]
+    # del records[FINISH_ROW_INDEX:]
     # Format the records with specific columns
     formatted_records = []
     for index, record in enumerate(records):
@@ -79,7 +111,11 @@ def home():
         # print(list(record.keys()))
         # print(list(record.values()))
         currency_money = data[user.rowIndex]
-        if currency_money is None or currency_money == '':
+        if (
+            currency_money is None or 
+            currency_money == '' or 
+            (isinstance(currency_money, (int, float)) and math.isnan(currency_money))
+        ):
             continue
         try:
             if index >= 10:
@@ -92,13 +128,12 @@ def home():
 
         # Select specific columns from the record
         formatted_record = {
-            # 'TT': data[0],
-            'Ngày, tháng': data[1],
-            'CK': data[2],
-            'TM/CK': data[3],
-            'Nội dung': data[4],
-            'Số liệu': currency_money,
-            # Add more columns as needed
+            'Ngày, tháng': clean_value(data[1]),
+            'CK': clean_value(data[2]),
+            'TM/CK': clean_value(data[3]),
+            'Nội dung': clean_value(data[4]),
+            'Số liệu': clean_value(currency_money),
+            # Thêm các cột khác nếu cần
         }
         formatted_records.append(formatted_record)
     # Render the records in an HTML table
@@ -144,7 +179,12 @@ def upload_file():
     
     if file and allowed_file(file.filename):
         filename = 'data.xlsx'  # Fixed filename
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+
+        # Xóa cache và cập nhật dữ liệu mới
+        cache.delete("excel_data")
+        excel_to_json()
         return jsonify({'status': 'success', 'message': 'File successfully uploaded'})
     else:
         return jsonify({'status': 'error', 'message': 'Allowed file types are xlsx only'})
