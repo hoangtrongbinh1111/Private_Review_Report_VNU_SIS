@@ -217,15 +217,20 @@ def import_excel():
 
     status = True
     try:
+        records = cache.get("excel_data")
+        if records is None:
+            records = excel_to_json()
         # Read the Excel file
-        records = pyexcel.get_records(file_name='data.xlsx')  # Replace 'data.xls' with the path to your Excel file
+        # records = pyexcel.get_records(file_name='data.xlsx')  # Replace 'data.xls' with the path to your Excel file
         list_user = list(records[0].keys()) # danh sách users
         # Danh sách mã số
-        list_code = list(records[1].values())
+        list_code = list(records[0].values())
         start_user_index = 5 # bắt đầu từ index User
         end_user_index = len(list_user) # 
         list_user_format = list_user[start_user_index:end_user_index]
         for user_name in list_user_format:
+            if clean_value(user_name) == "":
+                continue
             # Check if the user already exists
             existing_user = User.query.filter_by(code=str(list_code[start_user_index])).first()
             # If the user does not exist, create and add to the session
@@ -244,7 +249,7 @@ def import_excel():
     return render_template('about.html', status=status)
 
 def generate_message(name, uuid):
-    message = f"Phòng KHTC xin gửi thầy, cô đường link http://103.167.89.184:6868 và mật khẩu {uuid} để truy cập dữ liệu thu nhập hàng tháng. Trân trọng!"
+    message = f"Phòng KHTC xin gửi thầy, cô đường link https://taichinh.sis.vnu.edu.vn và mật khẩu {uuid} để truy cập dữ liệu thu nhập hàng tháng. Trân trọng!"
     return message
 @app.route('/export_excel')
 def export_excel():
