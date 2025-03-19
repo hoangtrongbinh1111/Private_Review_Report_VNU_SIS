@@ -2,36 +2,124 @@
 
 {% block main %}
 <style>
+    
+    body {
+        font-family: Arial, sans-serif;
+    }
+
     table {
         border-collapse: collapse;
         width: 100%;
     }
+
     th, td {
         border: 1px solid black;
         padding: 8px;
         text-align: left;
     }
+
     th {
         background-color: #f2f2f2;
     }
+
+    /* Nút In - đẹp hơn, cố định khi cuộn */
+    #printButton {
+        position: fixed;
+        top: 15rem;
+        right: 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 5px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease-in-out;
+    }
+
+    #printButton:hover {
+        background-color: #0056b3;
+        transform: scale(1.1);
+    }
+
+    /* Ẩn các phần không cần thiết khi in */
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+        #printSection, #printSection * {
+            visibility: visible;
+        }
+        #printSection {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+        }
+        #printButton {
+            display: none;
+        }
+    }
+
+    /* In chữ họ tên in hoa */
+    .uppercase {
+        text-transform: uppercase;
+    }
 </style>
-<h1>Thống kê thu nhập cán bộ <b>{{username}}</b></h1>
-<table>
-    <thead>
-        <tr>
-            {% for header in records[0].keys() %}
-            <th>{{ header }}</th>
+
+<!-- Nút In -->
+<button id="printButton" onclick="printPage()">🖨 In Giấy Xác Nhận</button>
+
+<div id="printSection">
+    <div style="text-align: center;">
+        <h3>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</h3>
+        <h4>Độc lập – Tự do – Hạnh phúc</h4>
+        <h2>GIẤY XÁC NHẬN THU NHẬP</h2>
+        <p>Năm 20......</p>
+    </div>
+
+    <p><b>Tổ chức chi trả thu nhập:</b> Trường Khoa học liên ngành và Nghệ thuật</p>
+    <p><b>Mã số thuế tổ chức chi trả thu nhập:</b> 0101183303-006</p>
+    <p><b>Họ và tên người có thu nhập:</b> <span class="uppercase">{{ username }}</span></p>
+
+    <!-- Bảng hiển thị thông tin thu nhập -->
+    <table>
+        <thead>
+            <tr>
+                {% for header in records[0].keys() %}
+                <th>{{ header }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in records %}
+            <tr>
+                {% for key, value in record.items() %}
+                <td {% if loop.last %}style="font-weight: bold;width: 15%;text-align: end;"{% endif %}>{{ value }}</td>
+                {% endfor %}
+            </tr>
             {% endfor %}
-        </tr>
-    </thead>
-    <tbody>
-        {% for record in records %}
-        <tr>
-            {% for key, value in record.items() %}
-            <td {% if loop.last %}style="font-weight: bold;width: 15%;text-align: end;"{% endif %}>{{ value }}</td>
-            {% endfor %}
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        </tbody>
+    </table>
+
+    <div style="display: flex; justify-content: space-between; margin-top: 30px;">
+        <div>
+            <p><b>NGƯỜI CÓ THU NHẬP</b></p>
+        </div>
+        <div style="text-align: center;">
+            <p><i>Hà Nội, ngày ….. tháng ….. năm ……..</i></p>
+            <p><b>ĐẠI DIỆN HỢP PHÁP</b></p>
+            <p><b>CỦA TỔ CHỨC TRẢ THU NHẬP</b></p>
+            <p><i>Ký, ghi rõ họ tên, chức vụ và đóng dấu</i></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function printPage() {
+        window.print();
+    }
+</script>
+
 {% endblock %}
