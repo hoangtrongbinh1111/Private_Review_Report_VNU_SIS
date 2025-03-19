@@ -129,7 +129,7 @@ def home():
         # Select specific columns from the record
         formatted_record = {
             'Ngày, tháng': clean_value(data[1]),
-            'CK': clean_value(data[2]),
+            # 'CK': clean_value(data[2]),
             'TM/CK': clean_value(data[3]),
             'Nội dung': clean_value(data[4]),
             'Số liệu': clean_value(currency_money),
